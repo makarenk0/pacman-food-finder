@@ -12,7 +12,7 @@ namespace Pacman
 {
     public class Food
     {
-        public PictureBox[,] FoodImage = new PictureBox[30,27];
+        public KeyValuePair<PictureBox, int>[,] FoodImage = new KeyValuePair<PictureBox, int>[30,27];
         public int Amount = 0;
 
         private const int FoodScore = 10;
@@ -26,58 +26,50 @@ namespace Pacman
                 {
                     if (Form1.gameboard.Matrix[y,x] == 1 || Form1.gameboard.Matrix[y, x] == 2)
                     {
-                        FoodImage[y, x] = new PictureBox();
-                        FoodImage[y, x].Name = "FoodImage" + Amount.ToString();
-                        FoodImage[y, x].SizeMode = PictureBoxSizeMode.AutoSize;
-                        FoodImage[y, x].Location = new Point(x * 16 - 1, y * 16 + 47);
+                        FoodImage[y, x] = new KeyValuePair<PictureBox, int>(new PictureBox(), 0);
+                        FoodImage[y, x].Key.Name = "FoodImage" + Amount.ToString();
+                        FoodImage[y, x].Key.SizeMode = PictureBoxSizeMode.AutoSize;
+                        FoodImage[y, x].Key.Location = new Point(x * 16 - 1, y * 16 + 47);
                         if (Form1.gameboard.Matrix[y,x] == 1)
                         {
-                            FoodImage[y, x].Image = Properties.Resources.Block_1;
+                            FoodImage[y, x].Key.Image = Properties.Resources.Block_1;
                             Amount++;
                         }
                         else
                         {
-                            FoodImage[y, x].Image = Properties.Resources.Block_2;
+                            FoodImage[y, x].Key.Image = Properties.Resources.Block_2;
                         }
-                        formInstance.Controls.Add(FoodImage[y, x]);
-                        FoodImage[y, x].BringToFront();
+                        formInstance.Controls.Add(FoodImage[y, x].Key);
+                        FoodImage[y, x].Key.BringToFront();
                     }
                 }
             }
         }
 
-        public void CreateOneFoodImage(int x ,int y, Form1 formInstance)
+        public void CreateOneFoodImage(int x ,int y, Form1 formInstance, int iterateNum)
         {
-            if(x < 27 && y < 30)
+            if(x < 27 && y < 30 && FoodImage[y, x].Equals(new KeyValuePair<PictureBox, int>()))
             {
-                FoodImage[y, x] = new PictureBox();
-                FoodImage[y, x].Name = "FoodImage" + Amount.ToString();
-                FoodImage[y, x].SizeMode = PictureBoxSizeMode.AutoSize;
-                FoodImage[y, x].Location = new Point(x * 16 - 1, y * 16 + 47);
+                FoodImage[y, x] = new KeyValuePair<PictureBox, int>(new PictureBox(), iterateNum);
+                FoodImage[y, x].Key.Name = "FoodImage" + Amount.ToString();
+                FoodImage[y, x].Key.SizeMode = PictureBoxSizeMode.AutoSize;
+                FoodImage[y, x].Key.Location = new Point(x * 16 - 1, y * 16 + 47);
                 
-                FoodImage[y, x].Image = Properties.Resources.Block_1;
+                FoodImage[y, x].Key.Image = Properties.Resources.Block_1;
                
                 
-                formInstance.Controls.Add(FoodImage[y, x]);
-                FoodImage[y, x].BringToFront();
+                formInstance.Controls.Add(FoodImage[y, x].Key);
+                FoodImage[y, x].Key.BringToFront();
             }
             
         }
 
-        public void DeleteOneFoodImage(int x, int y, Form1 formInstance)
+        public void DeleteOneFoodImage(int x, int y, Form1 formInstance, int iterateNum)
         {
-            if (x < 27 && y < 30)
+            if (x < 27 && y < 30 && FoodImage[y, x].Value == iterateNum)
             {
-                FoodImage[y, x] = new PictureBox();
-                FoodImage[y, x].Name = "FoodImage" + Amount.ToString();
-                FoodImage[y, x].SizeMode = PictureBoxSizeMode.AutoSize;
-                FoodImage[y, x].Location = new Point(x * 16 - 1, y * 16 + 47);
-
-                FoodImage[y, x].Image = Properties.Resources.eyes;
-
-
-                formInstance.Controls.Add(FoodImage[y, x]);
-                FoodImage[y, x].BringToFront();
+                formInstance.Controls.Remove(FoodImage[y, x].Key);
+                FoodImage[y, x] = new KeyValuePair<PictureBox, int>();
             }
 
         }
@@ -85,7 +77,7 @@ namespace Pacman
         public void EatFood(int x, int y)
         {
             // Eat food
-            FoodImage[x, y].Visible = false;
+            FoodImage[x, y].Key.Visible = false;
             Form1.gameboard.Matrix[x, y] = 0;
             Form1.player.UpdateScore(FoodScore);
             Amount--;
@@ -96,7 +88,7 @@ namespace Pacman
         public void EatSuperFood(int x, int y)
         {
             // Eat food
-            FoodImage[x, y].Visible = false;
+            FoodImage[x, y].Key.Visible = false;
             Form1.gameboard.Matrix[x, y] = 0;
             Form1.player.UpdateScore(SuperFoodScore);
             Form1.ghost.ChangeGhostState();

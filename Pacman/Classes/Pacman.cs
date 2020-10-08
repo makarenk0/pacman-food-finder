@@ -88,10 +88,10 @@ namespace Pacman
             {
                 switch (direction)
                 {
-                    case 1: PacmanImage.Top -= 16; yCoordinate--; break;
-                    case 2: PacmanImage.Left += 16; xCoordinate++; break;
-                    case 3: PacmanImage.Top += 16; yCoordinate++; break;
-                    case 4: PacmanImage.Left -= 16; xCoordinate--; break;
+                    case 1: PacmanImage.Top -= 16; yCoordinate--; break;  
+                    case 2: PacmanImage.Left += 16; xCoordinate++; break; 
+                    case 3: PacmanImage.Top += 16; yCoordinate++; break; 
+                    case 4: PacmanImage.Left -= 16; xCoordinate--; break; 
                 }
                 currentDirection = direction;
                 UpdatePacmanImage();
@@ -146,27 +146,26 @@ namespace Pacman
         {
             // Keep moving pacman
 
+            
+
             Explore();
-            if (searcher != null)
+           
+
+            MovePacman(currentDirection);
+
+            if (foundStartPoint)
             {
                 if (searcher._goingBack)
                 {
-                    Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate, _formInstance);
+                    Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate, _formInstance, searcher._current.Count + 1);
                     Form1.pacman.PacmanImage.BringToFront();
                 }
                 else
                 {
-                    Form1.food.CreateOneFoodImage(xCoordinate, yCoordinate, _formInstance);
+                    Form1.food.CreateOneFoodImage(xCoordinate, yCoordinate, _formInstance, searcher._current.Count);
                     Form1.pacman.PacmanImage.BringToFront();
                 }
             }
-
-            MovePacman(currentDirection);
-
-            // Form1.gameboard.Matrix[yCoordinate , xCoordinate] = 1;
-            
-           
-            
 
         }
 
@@ -210,21 +209,14 @@ namespace Pacman
                 {
                     searcher = new Graph(GetFreeDirections(), 2);
                     foundStartPoint = true;
+                    TakeALook();
                 }
                 else
                 {
-                    List<short> dirs = GetFreeDirections();
-                    dirs.Remove(searcher.Opposite((short)currentDirection));
-                    //bool buf = searcher._goingBack;
-                    currentDirection = searcher.Go((short)currentDirection, dirs);
-
-                    //if (!buf && searcher._goingBack)
-                    //{
-                    //    if (currentDirection == 1) Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate + 1, _formInstance);
-                    //    else if (currentDirection == 2) Form1.food.DeleteOneFoodImage(xCoordinate - 1, yCoordinate, _formInstance);
-                    //    else if (currentDirection == 3) Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate + 1, _formInstance);
-                    //    else Form1.food.DeleteOneFoodImage(xCoordinate + 1, yCoordinate, _formInstance);
-                    //}
+                    bool buf = searcher._goingBack;
+                    TakeALook();
+                    Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate, _formInstance, searcher._current.Count+1);
+                    
                 }     
             }
             else if (!check_direction(currentDirection))
@@ -245,6 +237,15 @@ namespace Pacman
                 return check_direction(2) ? 2 : 4;
             }
             return check_direction(1) ? 1 : 3;
+        }
+
+
+        private void TakeALook()
+        {
+            List<short> dirs = GetFreeDirections();
+            dirs.Remove(searcher.Opposite((short)currentDirection));
+
+            currentDirection = searcher.Go((short)currentDirection, dirs);
         }
 
 

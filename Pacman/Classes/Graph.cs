@@ -13,7 +13,7 @@ namespace Pacman.Classes
 {
     class Graph
     {
-        private Stack<Vertex> _current;
+        public Stack<Vertex> _current;
         private int limit;
         public bool _goingBack = false;
 
