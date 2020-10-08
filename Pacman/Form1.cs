@@ -62,9 +62,11 @@ namespace Pacman
             pacman.CreatePacmanImage(this, PacmanStartCoordinates.Item1, PacmanStartCoordinates.Item2);
         }
 
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+            /* //disabled 
             switch (e.KeyCode)
             {
                 case Keys.Up: pacman.nextDirection = 1; pacman.MovePacman(1); break;
@@ -72,6 +74,7 @@ namespace Pacman
                 case Keys.Down: pacman.nextDirection = 3; pacman.MovePacman(3); break;
                 case Keys.Left: pacman.nextDirection = 4; pacman.MovePacman(4); break;
             }
+            */
         }
 
     }

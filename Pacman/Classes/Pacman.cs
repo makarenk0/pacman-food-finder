@@ -24,6 +24,8 @@ namespace Pacman
         private ImageList PacmanImages = new ImageList(); 
         private Timer timer = new Timer();
 
+        private Form1 _formInstance;
+
         private int imageOn = 0;
 
         Graph searcher;
@@ -56,10 +58,11 @@ namespace Pacman
             PacmanImages.Images.Add(Properties.Resources.Pacman_4_3);
 
             PacmanImages.ImageSize = new Size(27,28);
+            
 
         }
 
-        public void CreatePacmanImage(Form formInstance, int StartXCoordinate, int StartYCoordinate)
+        public void CreatePacmanImage(Form1 formInstance, int StartXCoordinate, int StartYCoordinate)
         {
             // Create Pacman Image
             xStart = StartXCoordinate;
@@ -69,8 +72,9 @@ namespace Pacman
             Set_Pacman();
             formInstance.Controls.Add(PacmanImage);
             PacmanImage.BringToFront();
+            _formInstance = formInstance;
 
-            
+
         }
 
         public void MovePacman(int direction)
@@ -143,10 +147,27 @@ namespace Pacman
             // Keep moving pacman
 
             Explore();
+            if (searcher != null)
+            {
+                if (searcher._goingBack)
+                {
+                    Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate, _formInstance);
+                    Form1.pacman.PacmanImage.BringToFront();
+                }
+                else
+                {
+                    Form1.food.CreateOneFoodImage(xCoordinate, yCoordinate, _formInstance);
+                    Form1.pacman.PacmanImage.BringToFront();
+                }
+            }
+
             MovePacman(currentDirection);
 
+            // Form1.gameboard.Matrix[yCoordinate , xCoordinate] = 1;
+            
            
-            Console.WriteLine();
+            
+
         }
 
         public void Set_Pacman()
@@ -168,10 +189,10 @@ namespace Pacman
             return amount > 2;
         }
 
-        private List<int> GetFreeDirections()
+        private List<short> GetFreeDirections()
         {
-            List<int> directions = new List<int>();
-            for(int i = 1; i<5; i++)
+            List<short> directions = new List<short>();
+            for(short i = 1; i<5; i++)
             {
                 if (check_direction(i))
                 {
@@ -187,14 +208,23 @@ namespace Pacman
             {
                 if (!foundStartPoint)
                 {
-                    searcher = new Graph(GetFreeDirections(), 6);
+                    searcher = new Graph(GetFreeDirections(), 2);
                     foundStartPoint = true;
                 }
                 else
                 {
-                    List<int> dirs = GetFreeDirections();
-                    dirs.Remove(searcher.Opposite(currentDirection));
-                    currentDirection = searcher.Go(currentDirection, dirs);
+                    List<short> dirs = GetFreeDirections();
+                    dirs.Remove(searcher.Opposite((short)currentDirection));
+                    //bool buf = searcher._goingBack;
+                    currentDirection = searcher.Go((short)currentDirection, dirs);
+
+                    //if (!buf && searcher._goingBack)
+                    //{
+                    //    if (currentDirection == 1) Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate + 1, _formInstance);
+                    //    else if (currentDirection == 2) Form1.food.DeleteOneFoodImage(xCoordinate - 1, yCoordinate, _formInstance);
+                    //    else if (currentDirection == 3) Form1.food.DeleteOneFoodImage(xCoordinate, yCoordinate + 1, _formInstance);
+                    //    else Form1.food.DeleteOneFoodImage(xCoordinate + 1, yCoordinate, _formInstance);
+                    //}
                 }     
             }
             else if (!check_direction(currentDirection))

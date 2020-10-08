@@ -85,11 +85,6 @@ namespace Pacman
                 }
             }
 
-
-
-
-
-
             int FoodX = 0;
             int FoodY = 0;
             while (true)

@@ -41,10 +41,45 @@ namespace Pacman
                         }
                         formInstance.Controls.Add(FoodImage[y, x]);
                         FoodImage[y, x].BringToFront();
-                        
                     }
                 }
             }
+        }
+
+        public void CreateOneFoodImage(int x ,int y, Form1 formInstance)
+        {
+            if(x < 27 && y < 30)
+            {
+                FoodImage[y, x] = new PictureBox();
+                FoodImage[y, x].Name = "FoodImage" + Amount.ToString();
+                FoodImage[y, x].SizeMode = PictureBoxSizeMode.AutoSize;
+                FoodImage[y, x].Location = new Point(x * 16 - 1, y * 16 + 47);
+                
+                FoodImage[y, x].Image = Properties.Resources.Block_1;
+               
+                
+                formInstance.Controls.Add(FoodImage[y, x]);
+                FoodImage[y, x].BringToFront();
+            }
+            
+        }
+
+        public void DeleteOneFoodImage(int x, int y, Form1 formInstance)
+        {
+            if (x < 27 && y < 30)
+            {
+                FoodImage[y, x] = new PictureBox();
+                FoodImage[y, x].Name = "FoodImage" + Amount.ToString();
+                FoodImage[y, x].SizeMode = PictureBoxSizeMode.AutoSize;
+                FoodImage[y, x].Location = new Point(x * 16 - 1, y * 16 + 47);
+
+                FoodImage[y, x].Image = Properties.Resources.eyes;
+
+
+                formInstance.Controls.Add(FoodImage[y, x]);
+                FoodImage[y, x].BringToFront();
+            }
+
         }
 
         public void EatFood(int x, int y)

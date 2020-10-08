@@ -10,16 +10,16 @@ namespace Pacman.Classes
     {
         public List<Vertex> _nextVertices;
         public List<bool> _visitedVertices;
-        public List<int> _directions;
+        public List<short> _directions;
 
         public int _cameFrom;
 
-        public Vertex(List<int> directions)
+        public Vertex(List<short> directions)
         {
             _nextVertices = new List<Vertex>();
             _visitedVertices = new List<bool>();
-            _directions = new List<int>();
-            foreach(int dir in directions)
+            _directions = new List<short>();
+            foreach(short dir in directions)
             {
                 _nextVertices.Add(new Vertex());
                 _visitedVertices.Add(false);
@@ -31,12 +31,12 @@ namespace Pacman.Classes
         {
             _nextVertices = new List<Vertex>();
             _visitedVertices = new List<bool>();
-            _directions = new List<int>();
+            _directions = new List<short>();
         }
 
-        public void FillNewKnowledge(List<int> knowledge)
+        public void FillNewKnowledge(List<short> knowledge)
         {
-            foreach(int k in knowledge)
+            foreach(short k in knowledge)
             {
                 _nextVertices.Add(new Vertex());
                 _visitedVertices.Add(false);
@@ -85,6 +85,16 @@ namespace Pacman.Classes
                 }
             }
             return 0;
+        }
+
+        public int GetMemoryAmount()
+        {
+            int counter = 0;
+            for(int i = 0; i< _visitedVertices.Count; i++)
+            {
+                counter += 3;   //1 byte for bool(visited/not visited) two bites for short(direction where can go)
+            }
+            return counter;
         }
     }
 }
