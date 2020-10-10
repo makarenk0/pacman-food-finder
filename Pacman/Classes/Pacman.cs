@@ -31,9 +31,20 @@ namespace Pacman
         Graph searcher;
         bool foundStartPoint = false;
 
+        const Algoritm DEFAULT_ALGORITHM = Algoritm.DFS_with_iter_deeping;
+        const int DEFAULT_DFS_LIMIT = 2;
+        const int DEFAULT_PACMAN_SPEED = 20;
+
+        enum Algoritm
+        {
+            DFS_with_iter_deeping,
+            BFS
+        }
+
+
         public Pacman()
         {
-            timer.Interval = 20;     // SET SPEED
+            timer.Interval = DEFAULT_PACMAN_SPEED;     // SET SPEED
             timer.Enabled = true;
             timer.Tick += new EventHandler(timer_Tick);
 
@@ -207,7 +218,7 @@ namespace Pacman
             {
                 if (!foundStartPoint)
                 {
-                    searcher = new Graph(GetFreeDirections(), 2);
+                    searcher = DEFAULT_ALGORITHM==0 ? new Graph(GetFreeDirections(), DEFAULT_DFS_LIMIT) : new Graph(GetFreeDirections());
                     foundStartPoint = true;
                     TakeALook();
                 }
