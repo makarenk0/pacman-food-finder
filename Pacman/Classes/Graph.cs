@@ -20,8 +20,13 @@ namespace Pacman.Classes
         private int memoryUsage = 0;
         private int stepsAmount = 0;
         Stopwatch stopWatch;
+        String algorithmType;
 
-        public Graph(List<short> directions, int startLimit)
+
+        /*  If you don't pass the start limit it will be one, then the algorithm is BFS 
+         *  If you pass limit which is > 1 then the algorithm is "Iterative deepening depth-first search"
+         */
+        public Graph(List<short> directions, int startLimit = 1)
         {
             _current = new Stack<Vertex>();
             Vertex startVertex = new Vertex(directions);
@@ -30,6 +35,9 @@ namespace Pacman.Classes
 
             stopWatch = new Stopwatch();
             stopWatch.Start();
+
+            if (startLimit == 1) algorithmType = "Breadth First Search (BFS)";
+            else algorithmType = "Iterative deepening depth-first search (DFS with iterative deepening)";
         }
 
         public int GoBack()
@@ -99,7 +107,8 @@ namespace Pacman.Classes
         {
             ++stepsAmount;
             Console.Clear();
-            Console.WriteLine(String.Concat("Memory used: ", memoryUsage, " bytes"));
+            Console.WriteLine(algorithmType);
+            Console.WriteLine(String.Concat("Memory used: ", memoryUsage, " bytes (memory of vertices)"));
             Console.WriteLine(String.Concat("Steps done: ", stepsAmount));
             Console.WriteLine(String.Concat("Elapsed time: ", stopWatch.Elapsed, " hh:mm:ss: millis"));
         }

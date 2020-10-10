@@ -33,7 +33,7 @@ namespace Pacman
 
         public Pacman()
         {
-            timer.Interval = 10;     // SET SPEED
+            timer.Interval = 20;     // SET SPEED
             timer.Enabled = true;
             timer.Tick += new EventHandler(timer_Tick);
 
