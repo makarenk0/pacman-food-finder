@@ -176,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Pacman.ico" />
+    <None Include="Resources\Block 3.png" />
     <Content Include="Resources\Del Block 1.png" />
   </ItemGroup>
   <ItemGroup>

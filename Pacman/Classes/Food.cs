@@ -46,7 +46,7 @@ namespace Pacman
             }
         }
 
-        public void CreateOneFoodImage(int x ,int y, Form1 formInstance, int iterateNum)
+        public void CreateGreenFoodImage(int x ,int y, Form1 formInstance, int iterateNum)
         {
             if(x < 27 && y < 30 && FoodImage[y, x].Equals(new KeyValuePair<PictureBox, int>()))
             {
@@ -62,6 +62,24 @@ namespace Pacman
                 FoodImage[y, x].Key.BringToFront();
             }
             
+        }
+
+        public void CreateRedFoodImage(int x, int y, Form1 formInstance, int iterateNum)
+        {
+            if (x < 27 && y < 30 && FoodImage[y, x].Equals(new KeyValuePair<PictureBox, int>()))
+            {
+                FoodImage[y, x] = new KeyValuePair<PictureBox, int>(new PictureBox(), iterateNum);
+                FoodImage[y, x].Key.Name = "FoodImage" + Amount.ToString();
+                FoodImage[y, x].Key.SizeMode = PictureBoxSizeMode.AutoSize;
+                FoodImage[y, x].Key.Location = new Point(x * 16 - 1, y * 16 + 47);
+
+                FoodImage[y, x].Key.Image = Properties.Resources.Block_3;
+
+
+                formInstance.Controls.Add(FoodImage[y, x].Key);
+                FoodImage[y, x].Key.BringToFront();
+            }
+
         }
 
         public void DeleteOneFoodImage(int x, int y, Form1 formInstance, int iterateNum)

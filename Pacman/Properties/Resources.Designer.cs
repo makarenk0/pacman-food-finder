@@ -78,22 +78,23 @@ namespace Pacman.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        internal static System.Drawing.Bitmap DelBlock_1
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Del Block 1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Block_2 {
             get {
                 object obj = ResourceManager.GetObject("Block 2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Block_3 {
+            get {
+                object obj = ResourceManager.GetObject("Block_3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

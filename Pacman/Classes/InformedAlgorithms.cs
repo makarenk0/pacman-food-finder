@@ -2,27 +2,66 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 
 namespace Pacman.Classes
 {
     class InformedAlgorithms
     {
-
+        private Form1 _formInstance;
         private int[,] _map;
         private Dictionary<Point, Point> _cameFrom;
+        private Dictionary<Point, int> _costSoFar;
         private List<KeyValuePair<int, Point>> _frontier;
         private Point _foodPoint;
         private Point _startPoint;
 
-        public InformedAlgorithms(int startX, int startY, int[,] map)
+        public InformedAlgorithms(int startX, int startY, int[,] map, Form1 form)
         {
             _map = map;
             _foodPoint = FoodCoordinate();
             _startPoint = new Point(startX, startY);
             _cameFrom = new Dictionary<Point, Point>();
             _frontier = new List<KeyValuePair<int, Point>>();
+            _costSoFar = new Dictionary<Point, int>();
+
             _frontier.Add(new KeyValuePair<int, Point>(0, new Point(startX, startY)));
-            _cameFrom.Add(new Point(startX, startY), new Point(-1, -1));
+            _costSoFar.Add(_startPoint, 0);
+            _cameFrom.Add(_startPoint, new Point(-1, -1));
+
+            _formInstance = form;
+        }
+
+        public List<Point> AStarAlgorithm()
+        {
+            while (_frontier.Count != 0)
+            {
+                var current = _frontier.Last();
+                _frontier.RemoveAt(_frontier.Count - 1);
+
+                if (_map[current.Value.Y, current.Value.X] == 2)
+                {
+                    break;
+                }
+                foreach (var next in GetNeighbours(current.Value))
+                {
+                    int cost = _costSoFar[current.Value] + Utilities.Cost(current.Value, next);
+                    if (!_costSoFar.ContainsKey(next) || cost < _costSoFar[next])
+                    {
+                        _costSoFar[next] = cost;
+
+                        int priority = cost + Utilities.Heuristic(_foodPoint, next);
+                        _frontier.Add(new KeyValuePair<int, Point>(priority, next));
+                        _cameFrom.Add(next, current.Value);
+
+                        Form1.food.CreateRedFoodImage(next.X, next.Y, _formInstance, 0);
+                        _frontier.Sort(delegate (KeyValuePair<int, Point> p1, KeyValuePair<int, Point> p2) { return p1.Key > p2.Key ? -1 : 1; });
+                    }
+                }
+            }
+            List<Point> result = TrackFromEnd();
+            PrintResult(result);
+            return result;
         }
 
         public List<Point> GreedyAlgorithm()
@@ -43,7 +82,7 @@ namespace Pacman.Classes
                         int priority = Utilities.Heuristic(_foodPoint, next);
                         _frontier.Add(new KeyValuePair<int, Point>(priority, next));
                         _cameFrom.Add(next, current.Value);
-
+                        Form1.food.CreateRedFoodImage(next.X, next.Y, _formInstance, 0);
                         _frontier.Sort(delegate (KeyValuePair<int, Point> p1, KeyValuePair<int, Point> p2) { return p1.Key > p2.Key ? -1 : 1; });
                     }
                 }
@@ -67,13 +106,13 @@ namespace Pacman.Classes
 
         private Point FoodCoordinate()
         {
-            for(int i = 0; i< _map.GetLength(1); i++)
+            for(int i = 0; i< _map.GetLength(0); i++)
             {
-                for(int j = 0; j < _map.GetLength(0); j++)
+                for(int j = 0; j < _map.GetLength(1); j++)
                 {
-                    if(_map[j, i] == 2)
+                    if(_map[i, j] == 2)
                     {
-                        return new Point(i, j);
+                        return new Point(j, i);
                     }
                 }
             }
@@ -92,7 +131,7 @@ namespace Pacman.Classes
                 }
                 else
                 {
-                    Console.WriteLine("Nothing");
+                    Console.WriteLine("The food doesn't exist");
                     break;
                 }
             }

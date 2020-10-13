@@ -6,7 +6,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Pacman
@@ -16,6 +15,8 @@ namespace Pacman
         // Initialise variables
         public int xCoordinate = 0;
         public int yCoordinate = 0;
+        private int xBuf = 0;
+        private int yBuf = 0;
         private int xStart = 0;
         private int yStart = 0;
         public int currentDirection = 0;
@@ -32,10 +33,17 @@ namespace Pacman
         bool foundStartPoint = false;
 
         InformedAlgorithms _solver;
+        List<Point> _solution;
+        int _solutionCounter = 0;
+        bool _drawSolution = true;
 
-        const Algoritm DEFAULT_ALGORITHM = Algoritm.Greedy_algorithm;
+        /* ------------------------- OPTIONS -----------------------------*/
+        const Algoritm DEFAULT_ALGORITHM = Algoritm.A_star_algorithm;
         const int DEFAULT_DFS_LIMIT = 2;
         const int DEFAULT_PACMAN_SPEED = 20;
+        const int SOLUTION_DRAW_SPEED = 200;
+
+        /* ---------------------------------------------------------------*/
 
         enum Algoritm
         {
@@ -92,6 +100,8 @@ namespace Pacman
             // Create Pacman Image
             xStart = StartXCoordinate;
             yStart = StartYCoordinate;
+            xBuf = StartXCoordinate;
+            yBuf = StartYCoordinate;
             PacmanImage.Name = "PacmanImage";
             PacmanImage.SizeMode = PictureBoxSizeMode.AutoSize;
             Set_Pacman();
@@ -99,17 +109,19 @@ namespace Pacman
             PacmanImage.BringToFront();
             _formInstance = formInstance;
 
-            if(!(DEFAULT_ALGORITHM < Algoritm.Greedy_algorithm))
+            if(DEFAULT_ALGORITHM == Algoritm.Greedy_algorithm)
             {
-                _solver = new InformedAlgorithms(xStart, yStart, Form1.gameboard.Matrix);
-                List<Point> solution = _solver.GreedyAlgorithm();
-                foreach(var p in solution)
-                {
-                    Form1.food.CreateOneFoodImage(p.X, p.Y, _formInstance, 0);
-                }
+                _solver = new InformedAlgorithms(xStart, yStart, Form1.gameboard.Matrix, _formInstance);
+                _solution = _solver.GreedyAlgorithm();
+                timer.Interval = SOLUTION_DRAW_SPEED;
+            }
+            else if(DEFAULT_ALGORITHM == Algoritm.A_star_algorithm)
+            {
+                _solver = new InformedAlgorithms(xStart, yStart, Form1.gameboard.Matrix, _formInstance);
+                _solution = _solver.AStarAlgorithm();
+                timer.Interval = SOLUTION_DRAW_SPEED;
             }
             
-
         }
 
         public void MovePacman(int direction)
@@ -193,7 +205,7 @@ namespace Pacman
                 }
                 else
                 {
-                    Form1.food.CreateOneFoodImage(xCoordinate, yCoordinate, _formInstance, searcher._current.Count);
+                    Form1.food.CreateGreenFoodImage(xCoordinate, yCoordinate, _formInstance, searcher._current.Count);
                     Form1.pacman.PacmanImage.BringToFront();
                 }
             }
@@ -203,8 +215,31 @@ namespace Pacman
         private void timer_Tick_Uninformed_Algorithms(object sender, EventArgs e)
         {
             // Keep moving pacman
+            if (_drawSolution)
+            {
+                if (_solutionCounter == _solution.Count - 1)
+                {
+                    _drawSolution = false;
+                    timer.Interval = DEFAULT_PACMAN_SPEED;
+                    _solutionCounter = 1;
+                    SetRotationToPoint(_solution[_solutionCounter]);
+                }
+                else
+                {
+                    Form1.food.DeleteOneFoodImage(_solution[_solutionCounter].X, _solution[_solutionCounter].Y, _formInstance, 0);
+                    Form1.food.CreateGreenFoodImage(_solution[_solutionCounter].X, _solution[_solutionCounter].Y, _formInstance, 0);
+                    ++_solutionCounter;
+                    Form1.pacman.PacmanImage.BringToFront();
+                }    
+            }
 
+            if (PositionChanged())
+            {
+                ++_solutionCounter;
+                SetRotationToPoint(_solution[_solutionCounter]);
+            }
             MovePacman(currentDirection);
+            
 
         }
 
@@ -285,6 +320,26 @@ namespace Pacman
             dirs.Remove(searcher.Opposite((short)currentDirection));
 
             currentDirection = searcher.Go((short)currentDirection, dirs);
+        }
+
+        private void SetRotationToPoint(Point target)
+        {
+            Point current = new Point(xCoordinate, yCoordinate);
+            if (current.X > target.X) currentDirection = 4;
+            else if (current.X < target.X) currentDirection = 2;
+            if (current.Y > target.Y) currentDirection = 1;
+            if (current.Y < target.Y) currentDirection = 3;
+        }
+
+        private bool PositionChanged()
+        {
+            if(xBuf != xCoordinate || yBuf != yCoordinate)
+            {
+                xBuf = xCoordinate;
+                yBuf = yCoordinate;
+                return true;
+            }
+            return false;
         }
 
 
