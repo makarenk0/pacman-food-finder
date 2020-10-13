@@ -86,6 +86,7 @@
     <Compile Include="Classes\Ghost.cs" />
     <Compile Include="Classes\Graph.cs" />
     <Compile Include="Classes\HighScore.cs" />
+    <Compile Include="Classes\InformedAlgorithms.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Utilities.cs" />
     <Compile Include="Classes\Vertex.cs" />

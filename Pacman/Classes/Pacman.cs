@@ -31,14 +31,19 @@ namespace Pacman
         Graph searcher;
         bool foundStartPoint = false;
 
-        const Algoritm DEFAULT_ALGORITHM = Algoritm.DFS_with_iter_deeping;
+        InformedAlgorithms _solver;
+
+        const Algoritm DEFAULT_ALGORITHM = Algoritm.Greedy_algorithm;
         const int DEFAULT_DFS_LIMIT = 2;
         const int DEFAULT_PACMAN_SPEED = 20;
 
         enum Algoritm
         {
             DFS_with_iter_deeping,
-            BFS
+            BFS,
+            Greedy_algorithm,
+            A_star_algorithm
+
         }
 
 
@@ -46,7 +51,16 @@ namespace Pacman
         {
             timer.Interval = DEFAULT_PACMAN_SPEED;     // SET SPEED
             timer.Enabled = true;
-            timer.Tick += new EventHandler(timer_Tick);
+
+            if(DEFAULT_ALGORITHM < Algoritm.Greedy_algorithm)
+            {
+                timer.Tick += new EventHandler(timer_Tick_Informed_Algorithms);
+            }
+            else
+            {
+                timer.Tick += new EventHandler(timer_Tick_Uninformed_Algorithms);
+            }
+            
 
             PacmanImages.Images.Add(Properties.Resources.Pacman_1_0);
             PacmanImages.Images.Add(Properties.Resources.Pacman_1_1);
@@ -85,6 +99,16 @@ namespace Pacman
             PacmanImage.BringToFront();
             _formInstance = formInstance;
 
+            if(!(DEFAULT_ALGORITHM < Algoritm.Greedy_algorithm))
+            {
+                _solver = new InformedAlgorithms(xStart, yStart, Form1.gameboard.Matrix);
+                List<Point> solution = _solver.GreedyAlgorithm();
+                foreach(var p in solution)
+                {
+                    Form1.food.CreateOneFoodImage(p.X, p.Y, _formInstance, 0);
+                }
+            }
+            
 
         }
 
@@ -153,15 +177,11 @@ namespace Pacman
             if (Form1.gameboard.Matrix[y, x] < 4) { return true; } else { return false; }
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void timer_Tick_Informed_Algorithms(object sender, EventArgs e)
         {
             // Keep moving pacman
-
-            
-
             Explore();
-           
-
+          
             MovePacman(currentDirection);
 
             if (foundStartPoint)
@@ -177,6 +197,14 @@ namespace Pacman
                     Form1.pacman.PacmanImage.BringToFront();
                 }
             }
+
+        }
+
+        private void timer_Tick_Uninformed_Algorithms(object sender, EventArgs e)
+        {
+            // Keep moving pacman
+
+            MovePacman(currentDirection);
 
         }
 

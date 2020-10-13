@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Pacman.Classes
 {
@@ -19,6 +17,11 @@ namespace Pacman.Classes
                 int n = from + (Math.Abs(BitConverter.ToInt32(rno, 0)) % to);
                 return n;
             }
+        }
+
+        public static int Heuristic(Point a, Point b)
+        {
+            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
         }
     }
 }

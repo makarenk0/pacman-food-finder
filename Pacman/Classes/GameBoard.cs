@@ -77,9 +77,9 @@ namespace Pacman
                 if (Matrix[StartY, StartX] == 0) { break; }
             }
 
-            for (int y = 0; y < 30; y++)
+            for (int y = 0; y < 31; y++)
             {
-                for (int x = 0; x < 27; x++)
+                for (int x = 0; x < 28; x++)
                 {
                     if (Matrix[y, x] == 3) { StartX = x; StartY = y; }
                 }
@@ -97,7 +97,6 @@ namespace Pacman
                     break; 
                 }
             }
-
 
             Tuple<int,int> StartLocation = new Tuple<int,int> (StartX, StartY);
             return StartLocation;
