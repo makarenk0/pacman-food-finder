@@ -31,7 +31,7 @@ namespace Pacman
         public Form1()
         {
             InitializeComponent();
-            SetupGame(1);
+            SetupGame(Pacman.LEVEL_NUMBER);
         }
 
         public void SetupGame(int Level)

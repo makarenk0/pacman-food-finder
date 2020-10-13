@@ -52,7 +52,8 @@ namespace Pacman.Classes
 
                         int priority = cost + Utilities.Heuristic(_foodPoint, next);
                         _frontier.Add(new KeyValuePair<int, Point>(priority, next));
-                        _cameFrom.Add(next, current.Value);
+                        
+                        _cameFrom[next] = current.Value;
 
                         Form1.food.CreateRedFoodImage(next.X, next.Y, _formInstance, 0);
                         _frontier.Sort(delegate (KeyValuePair<int, Point> p1, KeyValuePair<int, Point> p2) { return p1.Key > p2.Key ? -1 : 1; });

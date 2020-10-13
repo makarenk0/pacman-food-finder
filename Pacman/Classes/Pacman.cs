@@ -38,10 +38,11 @@ namespace Pacman
         bool _drawSolution = true;
 
         /* ------------------------- OPTIONS -----------------------------*/
-        const Algoritm DEFAULT_ALGORITHM = Algoritm.A_star_algorithm;
+        const Algoritm DEFAULT_ALGORITHM = Algoritm.Greedy_algorithm;
         const int DEFAULT_DFS_LIMIT = 2;
         const int DEFAULT_PACMAN_SPEED = 20;
         const int SOLUTION_DRAW_SPEED = 200;
+        public static int LEVEL_NUMBER = 2;     // 1 - standart pacman map, 2 - map for testing difference between A* and greedy algorithm
 
         /* ---------------------------------------------------------------*/
 
